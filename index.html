@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    /* Stil za postavljanje canvasa na punu rezoluciju */
+    canvas {
+      display: block;
+      background-color: #f0f0f0; /* Bela pozadina */
+    }
+  </style>
+</head>
+<body>
+  <!-- HTML canvas element za analogni sat u sredini ekrana -->
+  <canvas id="myCanvas"></canvas>
+
+  <script>
+    // Uzimanje referenci na canvas i njegov 2D kontekst
+    var canvas = document.getElementById('myCanvas');
+    var ctx = canvas.getContext('2d');
+
+    // Postavljanje dimenzija canvasa na punu rezoluciju
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Funkcija za crtanje analognog sata
+    function drawClock() {
+      // Središna tačka sata
+      var centerX = canvas.width / 2;
+      var centerY = canvas.height / 2;
+
+      // Radijus sata
+      var clockRadius = Math.min(canvas.width, canvas.height) * 0.4;
+
+      // Funkcija za crtanje kazaljki sata
+      function drawHand(rotation, length, width, color) {
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width;
+        ctx.moveTo(centerX, centerY);
+        var angle = Math.PI * 1.5 + rotation;
+        var x = centerX + Math.cos(angle) * length;
+        var y = centerY + Math.sin(angle) * length;
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.closePath();
+      }
+
+      // Crta krug sata
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, clockRadius, 0, Math.PI * 2);
+      ctx.strokeStyle = 'blue'; // Boja sata
+      ctx.lineWidth = 10;
+      ctx.stroke();
+      ctx.closePath();
+
+      // Crta brojčanike sata
+      for (var i = 1; i <= 12; i++) {
+        var angle = (i / 12) * (Math.PI * 2);
+        var x = centerX + Math.cos(angle) * (clockRadius - 30);
+        var y = centerY + Math.sin(angle) * (clockRadius - 30);
+        ctx.font = '24px Arial';
+        ctx.fillText(i, x - 10, y + 10);
+      }
+
+      // Trenutno vreme
+      var now = new Date();
+      var hours = now.getHours() % 12;
+      var minutes = now.getMinutes();
+      var seconds = now.getSeconds();
+
+      // Računanje rotacije kazaljki
+      var hourRotation = (hours + minutes / 60) * (Math.PI * 2) / 12;
+      var minuteRotation = (minutes + seconds / 60) * (Math.PI * 2) / 60;
+      var secondRotation = (seconds * (Math.PI * 2) / 60);
+
+      // Pokretanje animacije
+      setInterval(function() {
+        // Briše prethodno nacrtani crtež sata
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Ponovno crtanje sata s novim rotacijama kazaljki
+        drawClock();
+        drawHand(hourRotation, clockRadius * 0.5, 10, 'blue'); // Kazaljka za sate
+        drawHand(minuteRotation, clockRadius * 0.7, 5, 'blue'); // Kazaljka za minute
+        drawHand(secondRotation, clockRadius * 0.8, 2, 'red'); // Kazaljka za sekunde
+        secondRotation += (Math.PI * 2) / 60; // Povećaj rotaciju sekundarne kazaljke
+      }, 1000); // Promena svake sekunde
+    }
+
+    // Pokretanje crtanja sata
+    drawClock();
+  </script>
+</body>
+</html>
