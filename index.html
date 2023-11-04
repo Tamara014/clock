@@ -62,6 +62,12 @@
         ctx.fillText(i, x - 10, y + 10);
       }
 
+
+
+      // Pokretanje animacije
+      setInterval(function() {
+        // Briše prethodno nacrtani crtež sata
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
       // Trenutno vreme
       var now = new Date();
       var hours = now.getHours() % 12;
@@ -72,12 +78,6 @@
       var hourRotation = (hours + minutes / 60) * (Math.PI * 2) / 12;
       var minuteRotation = (minutes + seconds / 60) * (Math.PI * 2) / 60;
       var secondRotation = (seconds * (Math.PI * 2) / 60);
-
-      // Pokretanje animacije
-      setInterval(function() {
-        // Briše prethodno nacrtani crtež sata
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
         // Ponovno crtanje sata s novim rotacijama kazaljki
         drawClock();
         drawHand(hourRotation, clockRadius * 0.5, 10, 'blue'); // Kazaljka za sate
